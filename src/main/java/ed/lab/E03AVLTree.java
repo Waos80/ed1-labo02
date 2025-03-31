@@ -6,13 +6,16 @@ public class E03AVLTree<T> {
     public TreeNode<T> root;
     private final Comparator<T> comparator;
 
-
     private int height(TreeNode<T> node, int h) {
         if (node == null) {
             return h;
         }
 
         return Math.max(height(node.left, h + 1), height(node.right, h + 1));
+    }
+
+    private int balance(TreeNode<T> root) {
+        return height(root.right, -1) - height(root.left, -1);
     }
 
     private TreeNode<T> treeSearch(TreeNode<T> node, T val) {
@@ -29,7 +32,7 @@ public class E03AVLTree<T> {
 
     private void treeInsert(TreeNode<T> node, T value) {
         if (node == null) {
-            node = new TreeNode<T>(value);
+            node = new TreeNode<>(value);
             return;
         }
 
@@ -38,6 +41,8 @@ public class E03AVLTree<T> {
         } else {
             treeInsert(node.left, value);
         }
+
+        balanceTree(node);
     }
 
     private void size(TreeNode<T> node, int sum) {
@@ -56,6 +61,45 @@ public class E03AVLTree<T> {
         return findSuccessor(right.left);
     }
 
+    private void rotateLeft(TreeNode<T> root) {
+        TreeNode<T> node = root.right;
+        root.right = node.left;
+        node.left = root;
+        root = node;
+    }
+
+    private void rotateRight(TreeNode<T> root) {
+        TreeNode<T> node = root.left;
+        root.left = node.right;
+        node.right = root;
+        root = node;
+    }
+
+    private void balanceTree(TreeNode<T> root) {
+        int balance = balance(root);
+        if (balance > 1) {
+            rotateLeft(root);
+            if (balance(root.right) > 1) {
+                rotateLeft(root);
+            }
+
+            if (balance(root.right) < -1) {
+                rotateRight(root);
+            }
+        }
+
+        if (balance < -1) {
+            rotateRight(root);
+            if (balance(root.right) > 1) {
+                rotateLeft(root);
+            }
+
+            if (balance(root.right) < -1) {
+                rotateRight(root);
+            }
+        }
+    }
+
     public E03AVLTree(Comparator<T> comparator) {
         this.comparator = comparator;
         this.root = null;
@@ -63,7 +107,7 @@ public class E03AVLTree<T> {
 
     public void insert(T value) {
         if (root == null) {
-            root = new TreeNode<T>(value);
+            root = new TreeNode<>(value);
         } else {
             treeInsert(root, value);
         }
@@ -75,20 +119,16 @@ public class E03AVLTree<T> {
             return;
         }
 
-        if (node.left == null && node.right == null) {
-            node = null;
-        }
-        else if (node.left != null && node.right == null) {
+
+        if (node.right != null) {
+            TreeNode<T> successor = findSuccessor(node.right);
+            node.right.left = successor.right;
+            node = successor;
+        } else if (node.left != null) {
             node = node.left;
         }
-        else {
-            TreeNode<T> tmp = findSuccessor(node.right);
-            TreeNode<T> successor = tmp;
 
-            tmp = successor.right;
-            successor.right = node.right;
-            node = successor;
-        }
+        balanceTree(node);
     }
 
     public T search(T value) {
