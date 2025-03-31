@@ -15,7 +15,7 @@ public class E03AVLTree<T> {
     }
 
     private int balance(TreeNode<T> root) {
-        return height(root.right, -1) - height(root.left, -1);
+        return height(root.right, 0) - height(root.left, 0);
     }
 
     private TreeNode<T> treeSearch(TreeNode<T> node, T val) {
@@ -137,7 +137,7 @@ public class E03AVLTree<T> {
     }
 
     public int height() {
-        return height(root, -1);
+        return height(root, 0);
     }
 
     public int size() {
