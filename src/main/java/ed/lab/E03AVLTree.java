@@ -77,6 +77,7 @@ public class E03AVLTree<T> {
 
     private void balanceTree(TreeNode<T> root) {
         int balance = balance(root);
+
         if (balance > 1) {
             rotateLeft(root);
             if (balance(root.right) > 1) {
