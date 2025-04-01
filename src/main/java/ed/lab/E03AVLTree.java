@@ -134,7 +134,11 @@ public class E03AVLTree<T> {
     }
 
     public int height() {
-        return height(root, 0);
+        if (root == null) {
+            return 0;
+        }
+
+        return height(root, -1);
     }
 
     public int size() {
