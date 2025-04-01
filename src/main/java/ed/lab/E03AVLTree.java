@@ -5,6 +5,7 @@ import java.util.Comparator;
 public class E03AVLTree<T> {
     public TreeNode<T> root;
     private final Comparator<T> comparator;
+    private int size;
 
     private int height(TreeNode<T> node, int h) {
         if (node == null) {
@@ -43,14 +44,6 @@ public class E03AVLTree<T> {
         }
 
         balanceTree(node);
-    }
-
-    private void size(TreeNode<T> node, int sum) {
-        if (node != null) {
-            sum += 1;
-            size(node.left, sum);
-            size(node.right, sum);
-        }
     }
 
     private TreeNode<T> findSuccessor(TreeNode<T> right) {
@@ -104,6 +97,7 @@ public class E03AVLTree<T> {
     public E03AVLTree(Comparator<T> comparator) {
         this.comparator = comparator;
         this.root = null;
+        this.size = 0;
     }
 
     public void insert(T value) {
@@ -112,6 +106,8 @@ public class E03AVLTree<T> {
         } else {
             treeInsert(root, value);
         }
+
+        size++;
     }
 
     public void delete(T value) {
@@ -128,6 +124,7 @@ public class E03AVLTree<T> {
             node = node.left;
         }
 
+        size--;
         balanceTree(node);
     }
 
@@ -141,8 +138,6 @@ public class E03AVLTree<T> {
     }
 
     public int size() {
-        int sum = 0;
-        size(root, sum);
-        return sum;
+        return size;
     }
 }
