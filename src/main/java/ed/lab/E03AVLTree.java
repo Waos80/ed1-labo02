@@ -101,8 +101,11 @@ public class E03AVLTree<T> {
     }
 
     public void insert(T value) {
+
         if (root == null) {
             root = new TreeNode<>(value);
+        } else if (search(value) != null){
+            return;
         } else {
             treeInsert(root, value);
         }
