@@ -54,19 +54,18 @@ public class E03AVLTree<T> {
     private TreeNode<T> balanceTree(TreeNode<T> root) {
         int balance = balance(root);
         if (balance > 1) {
-            root = rotateLeft(root);
             if (balance(root.right) < 0) {
                 root.right = rotateRight(root.right);
+                root = rotateLeft(root);
             } else if (balance(root.right) > 0) {
                 root.right = rotateLeft(root.right);
             }
         }
 
-        balance = balance(root);
         if (balance < -1) {
-            root = rotateRight(root);
             if (balance(root.left) > 0) {
                 root.left = rotateLeft(root.left);
+                root = rotateRight(root);
             } else if (balance(root.left) < 0) {
                 root.left = rotateRight(root.left);
             }
