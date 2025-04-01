@@ -110,7 +110,7 @@ public class E03AVLTree<T> {
         if (found == null) {
             return;
         }
-        found = deleteTreeNode(found, value);
+        root = deleteTreeNode(found, value);
         root = balanceTree(root);
     }
 
