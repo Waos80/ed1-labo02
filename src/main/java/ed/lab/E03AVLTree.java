@@ -33,7 +33,6 @@ public class E03AVLTree<T> {
         if (root == null) {
             return 0;
         }
-
         return height(root.right, 0) - height(root.left, 0);
     }
 
@@ -84,7 +83,6 @@ public class E03AVLTree<T> {
         if (root.left == null) {
             return root;
         }
-
         return findMinimum(root.left);
     }
 
@@ -140,7 +138,6 @@ public class E03AVLTree<T> {
         if (root == null) {
             return level;
         }
-
         return Math.max(height(root.left, level + 1), height(root.right, level + 1));
     }
 
