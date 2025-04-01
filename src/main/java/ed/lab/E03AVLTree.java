@@ -62,6 +62,7 @@ public class E03AVLTree<T> {
             }
         }
 
+        balance = balance(root);
         if (balance < -1) {
             root = rotateRight(root);
             if (balance(root.left) > 0) {
