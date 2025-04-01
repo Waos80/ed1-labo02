@@ -133,7 +133,8 @@ public class E03AVLTree<T> {
     }
 
     public T search(T value) {
-        return treeSearch(root, value).value;
+        TreeNode<T> found = treeSearch(root, value);
+        return found != null ? found.value : null;
     }
 
     public int height() {
