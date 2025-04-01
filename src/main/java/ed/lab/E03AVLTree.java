@@ -87,30 +87,36 @@ public class E03AVLTree<T> {
     }
 
     private TreeNode<T> deleteTreeNode(TreeNode<T> root, T value) {
-        if (root.right != null) {
-            TreeNode<T> min = findMinimum(root.right);
-            if (root.right == min) {
-                root = root.right;
-            } else {
-                root.right.left = min.right;
-                min.right = root.right;
-                min.left = root.left;
-                root = min;
-            }
-        } else {
-            root = root.left;
+        if (root == null) {
+            return null;
         }
 
-        size--;
+        if (comparator.compare(value, root.value) > 0) {
+            root.right = deleteTreeNode(root.right, value);
+        } else if (comparator.compare(value, root.value) < 0) {
+            root.left = deleteTreeNode(root.left, value);
+        } else {
+            if (root.right != null) {
+                TreeNode<T> min = findMinimum(root.right);
+                if (root.right == min) {
+                    root = root.right;
+                } else {
+                    root.right.left = min.right;
+                    min.right = root.right;
+                    min.left = root.left;
+                    root = min;
+                }
+            } else {
+                root = root.left;
+            }
+            size--;
+        }
+
         return root;
     }
 
     public void delete(T value) {
-        TreeNode<T> found = searchInTree(root, value);
-        if (found == null) {
-            return;
-        }
-        root = deleteTreeNode(found, value);
+        root = deleteTreeNode(root, value);
         root = balanceTree(root);
     }
 
