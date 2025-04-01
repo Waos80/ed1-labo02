@@ -1,139 +1,136 @@
 package ed.lab;
 
 import java.util.Comparator;
+import java.lang.Math;
 
 public class E03AVLTree<T> {
-    public TreeNode<T> root;
-    private final Comparator<T> comparator;
     private int size;
+    private TreeNode<T> root;
+    private final Comparator<T> comparator;
 
-    private int height(TreeNode<T> node, int h) {
-        if (node == null) {
-            return h;
-        }
-
-        return Math.max(height(node.left, h + 1), height(node.right, h + 1));
+    public E03AVLTree(Comparator<T> comparator) {
+        this.size = 0;
+        this.root = null;
+        this.comparator = comparator;
     }
 
-    private int balance(TreeNode<T> root) {
+    private TreeNode<T> insertToTree(TreeNode<T> root, T value) {
+        if (root == null) {
+            size++;
+            return new TreeNode<>(value);
+        }
+
+        if (comparator.compare(value, root.value) > 0) {
+            root.right = insertToTree(root.right, value);
+        } else if (comparator.compare(value, root.value) < 0) {
+            root.left = insertToTree(root.left, value);
+        }
+
+        return root;
+    }
+
+    public int balance(TreeNode<T> root) {
+        if (root == null) {
+            return 0;
+        }
+
         return height(root.right, 0) - height(root.left, 0);
     }
 
-    private TreeNode<T> treeSearch(TreeNode<T> node, T val) {
-        if (node == null || comparator.compare(val, node.value) == 0) {
-            return node;
-        }
-
-        if (comparator.compare(val, node.value) > 0) {
-            return treeSearch(node.right, val);
-        } else {
-            return treeSearch(node.left, val);
-        }
+    private TreeNode<T> rotateLeft(TreeNode<T> root) {
+        TreeNode<T> pivot = root.right;
+        root.right = pivot.left;
+        pivot.left = root;
+        return pivot;
     }
 
-    private void treeInsert(TreeNode<T> node, T value) {
-        if (node == null) {
-            node = new TreeNode<>(value);
-            return;
-        }
-
-        if (comparator.compare(value, node.value) > 0){
-            treeInsert(node.right, value);
-        } else {
-            treeInsert(node.left, value);
-        }
-
-        balanceTree(node);
+    private TreeNode<T> rotateRight(TreeNode<T> root) {
+        TreeNode<T> pivot = root.left;
+        root.left = pivot.right;
+        pivot.right = root;
+        return pivot;
     }
 
-    private TreeNode<T> findSuccessor(TreeNode<T> right) {
-        if (right.left == null) {
-            return right;
-        }
 
-        return findSuccessor(right.left);
-    }
-
-    private void rotateLeft(TreeNode<T> root) {
-        TreeNode<T> node = root.right;
-        root.right = node.left;
-        node.left = root;
-        root = node;
-    }
-
-    private void rotateRight(TreeNode<T> root) {
-        TreeNode<T> node = root.left;
-        root.left = node.right;
-        node.right = root;
-        root = node;
-    }
-
-    private void balanceTree(TreeNode<T> root) {
+    private TreeNode<T> balanceTree(TreeNode<T> root) {
         int balance = balance(root);
-
         if (balance > 1) {
-            rotateLeft(root);
-            if (balance(root.right) > 1) {
-                rotateLeft(root);
-            }
-
-            if (balance(root.right) < -1) {
-                rotateRight(root);
-            }
+            root = rotateLeft(root);
         }
 
         if (balance < -1) {
-            rotateRight(root);
-            if (balance(root.right) > 1) {
-                rotateLeft(root);
-            }
-
-            if (balance(root.right) < -1) {
-                rotateRight(root);
-            }
+            root = rotateRight(root);
         }
-    }
 
-    public E03AVLTree(Comparator<T> comparator) {
-        this.comparator = comparator;
-        this.root = null;
-        this.size = 0;
+        return root;
     }
 
     public void insert(T value) {
+        root = insertToTree(root, value);
+        root = balanceTree(root);
+    }
 
-        if (root == null) {
-            root = new TreeNode<>(value);
-        } else if (search(value) != null){
-            return;
-        } else {
-            treeInsert(root, value);
+    private TreeNode<T> findMinimum(TreeNode<T> root) {
+        if (root.left == null) {
+            return root;
         }
 
-        size++;
+        return findMinimum(root.left);
+    }
+
+    private TreeNode<T> deleteToTree(TreeNode<T> root, T value) {
+        TreeNode<T> found = searchInTree(root, value);
+        if (found == null) {
+            return null;
+        }
+
+        if (found.right != null) {
+            TreeNode<T> min = findMinimum(found.right);
+            if (found.right == min) {
+                found = found.right;
+            } else {
+                found.right.left = min.right;
+                min.right = found.right;
+                min.left = found.left;
+                found = min;
+            }
+        } else {
+            found = found.left;
+        }
+
+        return root;
     }
 
     public void delete(T value) {
-        TreeNode<T> node = treeSearch(root, value);
-        if (node == null) {
-            return;
+        root = deleteToTree(root, value);
+        root = balanceTree(root);
+    }
+
+    private TreeNode<T> searchInTree(TreeNode<T> root, T value) {
+        if (root == null) {
+            return null;
         }
 
-        if (node.right != null) {
-            TreeNode<T> successor = findSuccessor(node.right);
-            node.right.left = successor.right;
-            node = successor;
-        } else if (node.left != null) {
-            node = node.left;
+        if (comparator.compare(value, root.value) > 0) {
+            return searchInTree(root.right, value);
+        } else if (comparator.compare(value, root.value) < 0) {
+            return searchInTree(root.left, value);
         }
 
-        size--;
-        balanceTree(node);
+        return root;
     }
 
     public T search(T value) {
-        TreeNode<T> found = treeSearch(root, value);
-        return found != null ? found.value : null;
+        TreeNode<T> result = searchInTree(root, value);
+        return result != null ? result.value : null;
+    }
+
+    private int height(TreeNode<T> root, int level) {
+        if (root == null) {
+            return level;
+        }
+
+        return Math.max(height(root.left, level + 1), height(root.right, level + 1));
     }
 
     public int height() {
