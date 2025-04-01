@@ -55,10 +55,20 @@ public class E03AVLTree<T> {
     private TreeNode<T> balanceTree(TreeNode<T> root) {
         int balance = balance(root);
         if (balance > 1) {
+            if (balance(root.right) < 0) {
+                root.right = rotateRight(root.right);
+            } else if (balance(root.right) > 0) {
+                root.right = rotateLeft(root.right);
+            }
             root = rotateLeft(root);
         }
 
         if (balance < -1) {
+            if (balance(root.left) > 0) {
+                root.left = rotateLeft(root.left);
+            } else if (balance(root.left) < 0) {
+                root.left = rotateRight(root.left);
+            }
             root = rotateRight(root);
         }
 
@@ -98,6 +108,7 @@ public class E03AVLTree<T> {
             found = found.left;
         }
 
+        size--;
         return root;
     }
 
@@ -115,9 +126,9 @@ public class E03AVLTree<T> {
             return searchInTree(root.right, value);
         } else if (comparator.compare(value, root.value) < 0) {
             return searchInTree(root.left, value);
+        } else {
+            return root;
         }
-
-        return root;
     }
 
     public T search(T value) {
@@ -137,8 +148,7 @@ public class E03AVLTree<T> {
         if (root == null) {
             return 0;
         }
-
-        return height(root, -1);
+        return height(root, 0);
     }
 
     public int size() {
