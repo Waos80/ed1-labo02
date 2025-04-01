@@ -47,7 +47,7 @@ public class E03AVLTree<T> {
 
     private void size(TreeNode<T> node, int sum) {
         if (node != null) {
-            sum++;
+            sum += 1;
             size(node.left, sum);
             size(node.right, sum);
         }
