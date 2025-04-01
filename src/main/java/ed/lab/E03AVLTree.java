@@ -86,7 +86,7 @@ public class E03AVLTree<T> {
         return findMinimum(root.left);
     }
 
-    private TreeNode<T> deleteToTree(TreeNode<T> root, T value) {
+    private TreeNode<T> deleteTreeNode(TreeNode<T> root, T value) {
         TreeNode<T> found = searchInTree(root, value);
         if (found == null) {
             return null;
@@ -107,11 +107,11 @@ public class E03AVLTree<T> {
         }
 
         size--;
-        return root;
+        return found;
     }
 
     public void delete(T value) {
-        root = deleteToTree(root, value);
+        root = deleteTreeNode(root, value);
         root = balanceTree(root);
     }
 
