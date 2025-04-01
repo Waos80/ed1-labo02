@@ -120,7 +120,6 @@ public class E03AVLTree<T> {
             return;
         }
 
-
         if (node.right != null) {
             TreeNode<T> successor = findSuccessor(node.right);
             node.right.left = successor.right;
