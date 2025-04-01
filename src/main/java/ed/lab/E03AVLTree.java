@@ -57,8 +57,8 @@ public class E03AVLTree<T> {
             if (balance(root.right) < 0) {
                 root.right = rotateRight(root.right);
                 root = rotateLeft(root);
-            } else if (balance(root.right) > 0) {
-                root.right = rotateLeft(root.right);
+            } else {
+                root = rotateLeft(root);
             }
         }
 
@@ -66,8 +66,8 @@ public class E03AVLTree<T> {
             if (balance(root.left) > 0) {
                 root.left = rotateLeft(root.left);
                 root = rotateRight(root);
-            } else if (balance(root.left) < 0) {
-                root.left = rotateRight(root.left);
+            } else {
+                root = rotateRight(root);
             }
         }
 
