@@ -138,6 +138,7 @@ public class E03AVLTree<T> {
         if (root == null) {
             return level;
         }
+
         return Math.max(height(root.left, level + 1), height(root.right, level + 1));
     }
 
@@ -145,6 +146,7 @@ public class E03AVLTree<T> {
         if (root == null) {
             return 0;
         }
+
         return height(root, 0);
     }
 
